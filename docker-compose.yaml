@@ -1,0 +1,46 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - /opt/mysql:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: UQdYSMUy1hS9Wc7v4V39Lmy9r7eWjrb9sfasfs # Need to be changed later
+       MYSQL_DATABASE: t24-wordpress
+       MYSQL_USER: admin-t24-wordpress
+       MYSQL_PASSWORD: UQdYSMUy1hS9Wgfdsgdsc # Need to be changed later
+
+   app01:
+     image: app-1     
+     build: 
+       context: ./app-1
+       dockerfile: Dockerfile
+     depends_on:
+       - db
+       - reverseproxy
+     restart: always
+
+
+   app02:
+     image: app-2
+     build: 
+       context: ./app-2
+       dockerfile: Dockerfile
+     depends_on:
+       - db
+       - reverseproxy
+     restart: always
+
+   reverseproxy:
+     image: reverseproxy
+     build:
+       context: ./reverseproxy
+       dockerfile: Dockerfile
+     ports:
+         - 8080:8080
+         - 8081:8081
+     restart: always
+
+
